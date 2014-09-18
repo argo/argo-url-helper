@@ -1,6 +1,6 @@
 {
   "name": "argo-url-helper",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "A URL helper for formatting and manipulating paths in Argo.",
   "main": "url.js",
   "scripts": {
