@@ -11,7 +11,7 @@ module.exports = function(handle) {
     env.helpers.url.join = function(pathname) {
       var parsed = url.parse(uri);
       parsed.search = null;
-      parsed.pathname = path.join(parsed.pathname, pathname);
+      parsed.pathname = path.join(parsed.pathname, pathname).replace(/\\/g, '/');
       
       return url.format(parsed);
     };
