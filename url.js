@@ -2,7 +2,7 @@ var path = require('path');
 var url = require('url');
 
 module.exports =function(opts) {
-  var useXForwardedHostHeader = true;
+  var useXForwardedHostHeader = false;
   if(opts && typeof opts.useXForwardedHostHeader !== 'undefined') {
     useXForwardedHostHeader = opts.useXForwardedHostHeader;
   }
@@ -14,10 +14,10 @@ module.exports =function(opts) {
       var uri = parseUri(env);
 
       
-      env.helpers.url.join = function(pathname, env) {
+      env.helpers.url.join = function(pathname, opts) {
         var uri = uri;
-        if(env) {
-          uri =  parseUri(env) 
+        if(opts) {
+          uri =  parseUri(env, opts) 
         }
         var parsed = url.parse(uri);
         parsed.search = null;
@@ -26,10 +26,10 @@ module.exports =function(opts) {
         return url.format(parsed);
       };
 
-      env.helpers.url.path = function(pathname, env) {
+      env.helpers.url.path = function(pathname, opts) {
         var uri = uri;
-        if(env) {
-          uri =  parseUri(env) 
+        if(opts) {
+          uri =  parseUri(env, opts) 
         }         
         var parsed = url.parse(uri);
         parsed.search = null;
@@ -38,9 +38,9 @@ module.exports =function(opts) {
         return url.format(parsed);
       };
 
-      env.helpers.url.current = function(env) {
-        if(env) {
-          return parseUri(env) 
+      env.helpers.url.current = function(opts) {
+        if(opts) {
+          return parseUri(env, opts) 
         } else {
           return uri;
         }
@@ -50,13 +50,14 @@ module.exports =function(opts) {
     });
   };
 
-  function parseUri(env) {
+  function parseUri(env, opts) {
     var xfp = env.request.headers['x-forwarded-proto'];
     var xfh = env.request.headers['x-forwarded-host'];
     var useXfh = useXForwardedHostHeader;
-    if(env.helpers.url && typeof env.helpers.url.useXForwardedHostHeader !== 'undefined') {
-      useXfh = env.helpers.url.useXForwardedHostHeader;
+    if(opts && typeof opts.useXForwardedHostHeader !== 'undefined') {
+      useXfh = opts.useXForwardedHostHeader; 
     }
+    
     var protocol;
 
     if (xfp && xfp.length) {
