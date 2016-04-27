@@ -15,11 +15,11 @@ module.exports =function(opts) {
 
       
       env.helpers.url.join = function(pathname, opts) {
-        var uri = uri;
+        var tmpUri = uri;
         if(opts) {
-          uri =  parseUri(env, opts) 
+          tmpUri =  parseUri(env, opts) 
         }
-        var parsed = url.parse(uri);
+        var parsed = url.parse(tmpUri);
         parsed.search = null;
         parsed.pathname = path.join(parsed.pathname, pathname).replace(/\\/g, '/');
         
@@ -27,11 +27,11 @@ module.exports =function(opts) {
       };
 
       env.helpers.url.path = function(pathname, opts) {
-        var uri = uri;
+        var tmpUri = uri;
         if(opts) {
-          uri =  parseUri(env, opts) 
+          tmpUri =  parseUri(env, opts) 
         }         
-        var parsed = url.parse(uri);
+        var parsed = url.parse(tmpUri);
         parsed.search = null;
         parsed.pathname = pathname;
 
