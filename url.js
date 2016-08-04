@@ -6,6 +6,12 @@ module.exports =function(opts) {
   if(opts && typeof opts.useXForwardedHostHeader !== 'undefined') {
     useXForwardedHostHeader = opts.useXForwardedHostHeader;
   }
+
+  var useXForwardedRootHeader = false;
+  if(opts && typeof opts.useXForwardedRootHeader !== 'undefined') {
+    useXForwardedRootHeader = opts.useXForwardedRootHeader;
+  }
+
   return function(handle) {
     handle('request', function(env, next) {
       env.helpers = env.helpers || {};
@@ -13,34 +19,33 @@ module.exports =function(opts) {
 
       var uri = parseUri(env);
 
-      
       env.helpers.url.join = function(pathname, opts) {
         var tmpUri = uri;
         if(opts) {
-          tmpUri =  parseUri(env, opts) 
+          tmpUri =  parseUri(env, opts)
         }
         var parsed = url.parse(tmpUri);
         parsed.search = null;
         parsed.pathname = path.join(parsed.pathname, pathname).replace(/\\/g, '/');
-        
+
         return url.format(parsed);
       };
 
       env.helpers.url.path = function(pathname, opts) {
         var tmpUri = uri;
         if(opts) {
-          tmpUri =  parseUri(env, opts) 
-        }         
+          tmpUri =  parseUri(env, opts)
+        }
         var parsed = url.parse(tmpUri);
         parsed.search = null;
-        parsed.pathname = pathname;
+        parsed.pathname = adjustPath(env, pathname, opts);
 
         return url.format(parsed);
       };
 
       env.helpers.url.current = function(opts) {
         if(opts) {
-          return parseUri(env, opts) 
+          return parseUri(env, opts)
         } else {
           return uri;
         }
@@ -53,11 +58,12 @@ module.exports =function(opts) {
   function parseUri(env, opts) {
     var xfp = env.request.headers['x-forwarded-proto'];
     var xfh = env.request.headers['x-forwarded-host'];
+
     var useXfh = useXForwardedHostHeader;
     if(opts && typeof opts.useXForwardedHostHeader !== 'undefined') {
-      useXfh = opts.useXForwardedHostHeader; 
+      useXfh = opts.useXForwardedHostHeader;
     }
-    
+
     var protocol;
 
     if (xfp && xfp.length) {
@@ -76,13 +82,34 @@ module.exports =function(opts) {
       var address = env.request.connection.address();
       host = address.address;
       if (address.port) {
-        if (!(protocol === 'https' && address.port === 443) && 
+        if (!(protocol === 'https' && address.port === 443) &&
             !(protocol === 'http' && address.port === 80)) {
           host += ':' + address.port
         }
       }
     }
 
-    return protocol + '://' + path.join(host, env.request.url);
+    var reqPath = adjustPath(env, opts);
+    return protocol + '://' + path.join(host, reqPath);
   }
-} 
+
+  function adjustPath(env, pathname, opts) {
+    if(arguments.length == 2) {
+      opts = pathname;
+      pathname = env.request.url;
+    }
+
+    var xfr = env.request.headers['x-forwarded-root'];
+    var useXfr = useXForwardedRootHeader;
+    if(opts && typeof opts.useXForwardedRootHeader != 'undefined') {
+      useXfr = options.useXForwardedRootHeader;
+    }
+
+    var root = '';
+    if (useXfr && xfr) {
+      root = xfr;
+    }
+
+    return path.join(root, pathname);
+  }
+}
