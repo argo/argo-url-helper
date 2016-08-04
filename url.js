@@ -22,7 +22,7 @@ module.exports =function(opts) {
       env.helpers.url.join = function(pathname, opts) {
         var tmpUri = uri;
         if(opts) {
-          tmpUri =  parseUri(env, opts)
+          tmpUri =  parseUri(env, opts);
         }
         var parsed = url.parse(tmpUri);
         parsed.search = null;
@@ -34,7 +34,7 @@ module.exports =function(opts) {
       env.helpers.url.path = function(pathname, opts) {
         var tmpUri = uri;
         if(opts) {
-          tmpUri =  parseUri(env, opts)
+          tmpUri =  parseUri(env, opts);
         }
         var parsed = url.parse(tmpUri);
         parsed.search = null;
@@ -45,7 +45,7 @@ module.exports =function(opts) {
 
       env.helpers.url.current = function(opts) {
         if(opts) {
-          return parseUri(env, opts)
+          return parseUri(env, opts);
         } else {
           return uri;
         }
