@@ -38,7 +38,7 @@ module.exports =function(opts) {
         }
         var parsed = url.parse(tmpUri);
         parsed.search = null;
-        parsed.pathname = adjustPath(env, pathname, opts);
+        parsed.pathname = adjustPath(env, opts, pathname);
 
         return url.format(parsed);
       };
@@ -93,9 +93,8 @@ module.exports =function(opts) {
     return protocol + '://' + path.join(host, reqPath);
   }
 
-  function adjustPath(env, pathname, opts) {
+  function adjustPath(env, opts, pathname) {
     if(arguments.length == 2) {
-      opts = pathname;
       pathname = env.request.url;
     }
 
