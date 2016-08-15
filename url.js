@@ -7,9 +7,9 @@ module.exports =function(opts) {
     useXForwardedHostHeader = opts.useXForwardedHostHeader;
   }
 
-  var useXForwardedRootHeader = false;
-  if(opts && typeof opts.useXForwardedRootHeader !== 'undefined') {
-    useXForwardedRootHeader = opts.useXForwardedRootHeader;
+  var useXForwardedPathHeader = false;
+  if(opts && typeof opts.useXForwardedPathHeader !== 'undefined') {
+    useXForwardedPathHeader = opts.useXForwardedPathHeader;
   }
 
   return function(handle) {
@@ -98,15 +98,15 @@ module.exports =function(opts) {
       pathname = env.request.url;
     }
 
-    var xfr = env.request.headers['x-forwarded-root'];
-    var useXfr = useXForwardedRootHeader;
-    if(opts && typeof opts.useXForwardedRootHeader != 'undefined') {
-      useXfr = options.useXForwardedRootHeader;
+    var xfPath = env.request.headers['x-forwarded-path'];
+    var useXFPath = useXForwardedPathHeader;
+    if(opts && typeof opts.useXForwardedPathHeader != 'undefined') {
+      useXFPath = options.useXForwardedPathHeader;
     }
 
     var root = '';
-    if (useXfr && xfr) {
-      root = xfr;
+    if (useXFPath && xfPath) {
+      root = xfPath;
     }
 
     return path.join(root, pathname);
