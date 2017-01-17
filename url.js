@@ -109,6 +109,6 @@ module.exports =function(opts) {
       root = xfPath;
     }
 
-    return path.join(root, pathname);
+    return path.join(root, pathname).replace(/\\/g, '/');
   }
 }
