@@ -90,7 +90,7 @@ module.exports =function(opts) {
     }
 
     var reqPath = adjustPath(env, opts);
-    return protocol + '://' + path.join(host, reqPath);
+    return protocol + '://' + path.join(host, reqPath).replace(/\\/g, '/');
   }
 
   function adjustPath(env, opts, pathname) {
